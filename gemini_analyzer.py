@@ -26,6 +26,8 @@ def analyze_document_with_gemini(raw_text: str) -> dict:
         model = genai.GenerativeModel('gemini-2.5-pro')
         response = model.generate_content(prompt)
 
+        
+
         json_string = response.text.strip().replace("```json", "").replace("```", "")
         return json.loads(json_string)
 

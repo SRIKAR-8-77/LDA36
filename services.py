@@ -40,6 +40,13 @@ def process_new_document(user_id: str, file_name: str, file_content: bytes):
         finally:
             db.close()
 
+            print({
+            "user_id": user_id,
+            "file_name": file_name,
+            "extracted_text": extracted_text,
+            "structured_data": structured_data
+        })
+
         return {
             "user_id": user_id,
             "file_name": file_name,
@@ -57,6 +64,7 @@ def get_chat_reply(user_id: str, question: str, history: list):
         user_question=question,
         chat_history=history
     )
+    print(response_text)
     return response_text
 
 def get_upcoming_events_for_user(user_id: str):
@@ -66,6 +74,16 @@ def get_upcoming_events_for_user(user_id: str):
             ImportantDate.user_id == user_id,
             ImportantDate.event_date >= date.today()
         ).order_by(ImportantDate.event_date.asc()).all()
+
+        print([
+            {
+                "date_id": event.date_id,
+                "user_id": event.user_id,
+                "file_name": event.file_name,
+                "event_date": event.event_date.isoformat(),
+                "event_description": event.event_description
+            } for event in events
+        ])
 
         return [
             {
