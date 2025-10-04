@@ -33,4 +33,4 @@ COPY . .
 RUN uv run python -c "from database import create_tables; create_tables()"
 
 # CRITICAL STEP 2: Define the command to start the FastAPI application
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "$PORT"]
+CMD uvicorn api:app --host 0.0.0.0 --port $PORT
