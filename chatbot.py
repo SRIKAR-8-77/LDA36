@@ -13,8 +13,13 @@ collection = chroma_client.get_collection(name="user_documents")
 
 def get_chatbot_response(user_id: str, user_question: str, chat_history: list) -> str:
 
-    if chat_history:
-        history_str = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
+    CONTEXT_WINDOW_SIZE = 16 
+    recent_history = chat_history[-CONTEXT_WINDOW_SIZE:] 
+
+    if recent_history:
+        # Format the recent history for the LLM prompts
+        history_str = "\n".join([f"{msg['role']}: {msg['content']}" for msg in recent_history])
+        
         rephrase_prompt = f"""
         Chat History:{history_str}
         Human Question: {user_question}
@@ -28,14 +33,12 @@ def get_chatbot_response(user_id: str, user_question: str, chat_history: list) -
 
     print(f"Rephrased Question: {standalone_question}")
 
-    # 2. Securely Retrieve Documents
     question_embedding = genai.embed_content(
         model=EMBEDDING_MODEL,
         content=standalone_question,
         task_type="RETRIEVAL_QUERY"
     )['embedding']
-    
-    # Search ChromaDB with the user_id filter
+
     results = collection.query(
         query_embeddings=[question_embedding],
         n_results=3,
@@ -47,7 +50,7 @@ def get_chatbot_response(user_id: str, user_question: str, chat_history: list) -
     final_prompt = f"""
     You are a helpful assistant. Answer the user's question based on the provided document snippets and the chat history.
     Chat History:
-    {chat_history}
+    {history_str} 
     Retrieved Document Snippets:
     ---
     {retrieved_documents}
