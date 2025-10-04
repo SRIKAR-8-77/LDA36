@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     poppler-utils \
     libglib2.0-dev \
-    libsqlite3-dev
-    # Clean up to keep the final image size small
+    libsqlite3-dev \
+    # The backslash at the end of the line means the command continues below
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
