@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     poppler-utils \
     libglib2.0-dev \
+    libsqlite3-dev
     # Clean up to keep the final image size small
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
