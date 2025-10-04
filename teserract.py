@@ -4,9 +4,6 @@ from PIL import Image
 import cv2
 import numpy as np
 
-# Set the path to your Tesseract installation
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\srikar Reddy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
-
 def ocr_from_pdf(pdf_path):
 
     try:
