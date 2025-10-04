@@ -30,7 +30,7 @@ COPY . .
 
 # CRITICAL STEP 1: Initialize the SQLite database tables
 # This runs the create_tables() function from database.py to create the ImportantDates table in app_data.db
-RUN /usr/local/bin/python -c "from database import create_tables; create_tables()"
+RUN uv run python -c "from database import create_tables; create_tables()"
 
 # CRITICAL STEP 2: Define the command to start the FastAPI application
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "$PORT"]
