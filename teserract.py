@@ -4,6 +4,8 @@ from PIL import Image
 import cv2
 import numpy as np
 
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+
 def ocr_from_pdf(pdf_path):
 
     try:
