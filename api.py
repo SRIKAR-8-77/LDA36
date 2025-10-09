@@ -1,4 +1,4 @@
-from dotenv import load_dotenv # 👈 ADD THIS LINE
+from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
 
     print("Application shutting down...")
 
-app = FastAPI(title="Document AI Backend")
+app = FastAPI(title="Document AI Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
