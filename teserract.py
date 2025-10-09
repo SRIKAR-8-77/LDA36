@@ -1,7 +1,5 @@
 import pymupdf as fitz  # PyMuPDF library
 import os
-# Note: Pillow (PIL) is retained as it is generally useful for image processing
-# and has minimal dependencies, but numpy/cv2 are removed.
 
 def ocr_from_pdf(pdf_path: str) -> str:
     """

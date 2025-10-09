@@ -1,14 +1,13 @@
-# database.py
-
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "sqlite:///./app_data.db"
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set!")
 
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -26,9 +25,3 @@ class ImportantDate(Base):
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
-
-if __name__ == "__main__":
-    # You can run this file directly once to create the database table.
-    print("Creating database tables...")
-    create_tables()
-    print("Tables created successfully.")

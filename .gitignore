@@ -26,8 +26,3 @@ temp_*.pdf # Temporary files created during processing
 # OS files
 .DS_Store
 Thumbs.db
-
-# Tesseract dependency path (Windows-specific)
-# While you've set this locally, it's a good idea to note that this path is unique to your machine.
-# The `teserract.py` file itself should be pushed, but the Tesseract executable is an external dependency.
-# You will need to install Tesseract on your deployment server.

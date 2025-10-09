@@ -1,25 +1,25 @@
 import os
 import google.generativeai as genai
-import chromadb
 from dotenv import load_dotenv
+from pinecone import Pinecone
+from vector_store import index
 
 load_dotenv()
+
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 EMBEDDING_MODEL = 'models/text-embedding-004'
 GENERATION_MODEL = 'gemini-2.5-pro'
 
-chroma_client = chromadb.PersistentClient(path="./db")
-collection = chroma_client.get_collection(name="user_documents")
-
 def get_chatbot_response(user_id: str, user_question: str, chat_history: list) -> str:
+    if not index:
+        raise ConnectionError("Pinecone index is not initialized.")
 
     CONTEXT_WINDOW_SIZE = 16 
     recent_history = chat_history[-CONTEXT_WINDOW_SIZE:] 
+    history_str = "" 
 
     if recent_history:
-        # Format the recent history for the LLM prompts
         history_str = "\n".join([f"{msg['role']}: {msg['content']}" for msg in recent_history])
-        
         rephrase_prompt = f"""
         Chat History:{history_str}
         Human Question: {user_question}
@@ -39,14 +39,15 @@ def get_chatbot_response(user_id: str, user_question: str, chat_history: list) -
         task_type="RETRIEVAL_QUERY"
     )['embedding']
 
-    results = collection.query(
-        query_embeddings=[question_embedding],
-        n_results=3,
-        where={"user_id": user_id}
+    query_results = index.query(
+        vector=question_embedding,
+        top_k=3,
+        include_metadata=True,
+        filter={"user_id": {"$eq": user_id}}
     )
     
-    retrieved_documents = "\n\n".join(results['documents'][0])
-
+    retrieved_documents = "\n\n".join([match['metadata']['text'] for match in query_results['matches']])
+    
     final_prompt = f"""
     You are a helpful assistant. Answer the user's question based on the provided document snippets and the chat history.
     Chat History:

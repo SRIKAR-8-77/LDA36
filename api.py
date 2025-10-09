@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 from datetime import date
+from contextlib import asynccontextmanager
+from database import create_tables
 
 from services import process_new_document, get_chat_reply, get_upcoming_events_for_user
 
@@ -24,6 +26,16 @@ class Event(BaseModel):
     file_name: str
     event_date: date
     event_description: str
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    
+    print("Creating database tables...")
+    create_tables()
+    print("Tables created successfully.")
+    yield
+
+    print("Application shutting down...")
 
 app = FastAPI(title="Document AI Backend")
 
